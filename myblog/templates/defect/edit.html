@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}数据维护{% endblock %}
+{% block mainbody %}
+    <div class="container">
+        <div class="row clearfix">
+            <h2 align="center">请填写缺陷最新跟踪情况</h2>
+            <div class="col-lg-2 col-xs-2">
+
+            </div>
+            <div class="col-lg-5 col-xs-5">
+                <div>
+
+                    <h4>缺陷编号:{{ defectitem.defectId }}</h4></br>
+                    <h4>设备名称:{{ defectitem.defectDev }}</h4></br>
+                    <h4>缺陷描述:{{ defectitem.defectDescription }}</h4></br>
+                    <h4>缺陷等级:{{ defectitem.defectGrade }}<span>&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;</span>缺陷状态:{{ defectitem.defectState }}
+                    </h4></br>
+                    <h4>
+                        消缺班组:{{ defectitem.defectRemoveTeam }}<span>&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;</span>设备主人:{{ defectitem.deviceMaster }}
+                    </h4></br>
+                    <h4>短期措施:{{ defectitem.shortAction }}</h4></br>
+                    <h4>完成时间:{{ defectitem.shortTime }}</h4></br>
+                    <h4>中期措施:{{ defectitem.middleAction }}</h4></br>
+                    <h4>完成时间:{{ defectitem.middleTime }}</h4></br>
+                    <h4>长期措施:{{ defectitem.longAction }}</h4></br>
+                    <h4>完成时间:{{ defectitem.longTime }}</h4></br>
+                    <h4>工作情况:{{ defectitem.workHaveDone }}</h4></br>
+                </div>
+            </div>
+            <div class="col-lg-3 col-xs-3">
+            </div>
+            {{ wtf.quick_form(form) }}
+            <div class="col-lg-2 col-xs-2">
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

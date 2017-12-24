@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}写博客{% endblock %}
+
+{% block content %}
+    <link href="{{ url_for('static',filename='css/select2.css') }}" rel="stylesheet"/>
+
+    <div class="container">
+        <div class="row">
+
+            <div class="col-xs-offset-0 col-xs-12 col-lg-offset-2  col-lg-7">
+                {#                <form method="POST" role="form" action="{{ url_for('blog.new_post') }}" enctype=multipart/form-data>#}
+                <form method="POST" role="form" action="{{ url_for('blog.new_post') }}" enctype=multipart/form-data>
+
+                    {{ form.hidden_tag() }}
+                    <div class="form-group col-lg-7 col-xs-12 ">
+                        <input class="btn btn-default " style="width: 40%" type="submit" value="发布">
+                    </div>
+                    <div class="form-group col-lg-offset-0 col-lg-12 col-xs-offset-0 col-xs-12">
+                        <div class="col-lg-offset-0 col-lg-5 col-xs-offset-0 col-xs-5" style="padding: 0px;">
+                            <h5 style="font-weight: bold ;">点击上传图片：</h5>
+                        </div>
+                        <div class="col-lg-offset-0 col-lg-7 col-xs-offset-0 col-xs-7" style="padding: 0px;">
+                            <input type=file multiple="multiple" name=file[] id="uploadfile">
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-offset-0 col-lg-12 col-xs-offset-0 col-xs-12">
+                        <div class="col-lg-offset-0 col-lg-5 col-xs-offset-0 col-xs-5" style="padding: 0px;">
+                            <h5 style="font-weight: bold ;">选择文章分类：</h5>
+
+                        </div>
+                        <div class="col-lg-offset-0 col-lg-7 col-xs-offset-0 col-xs-5 " style="padding: 0px">
+                            <select name="tags[]" id="dropmenu" class="select2" multiple="multiple">
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="form-group col-lg-offset-0 col-lg-12 col-xs-offset-0 col-xs-12">
+                        {{ form.title.label }}
+                        {% if form.title.errors %}
+                            {% for e in form.title.errors %}
+                                <p class="help-block">{{ e }}</p>
+                            {% endfor %}
+                        {% endif %}
+                        {{ form.title(class_='form-control') }}
+                    </div>
+                    <div class="form-group col-lg-offset-0 col-lg-12 col-xs-offset-0 col-xs-12">
+                        {{ form.text.label }}
+                        {% if form.text.errors %}
+                            {% for e in form.text.errors %}
+                                <p class="help-block">{{ e }}</p>
+                            {% endfor %}
+                        {% endif %}
+                        {{ form.text(id="editor", class_='form-control') }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="//cdn.ckeditor.com/4.4.7/standard/ckeditor.js"></script>
+    <script type="text/javascript" src="{{ url_for('static',filename='js/jquery.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/select2.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/zh-CN.js') }}"></script>
+    <script>
+        CKEDITOR.replace('editor');
+    </script>
+
+    <script>
+        $("#dropmenu").select2({
+            placeholder: "请选择文章分类",
+            // enable tagging
+            tags: true,
+            {#                            separator: ",",#}
+            multiple: true,
+            width: "100%",
+            tokenSeparators: [',', ' '],
+            maximumSelectionSize: 4,
+
+            // loading remote data
+            // see https://select2.github.io/options.html#ajax
+            ajax: {
+                url: "/blog/taglist",
+                dataType: 'json',
+                delay: 250,
+                processResults: function (data) {
+                    var parsed = data;
+                    var arr = [];
+                    for (var x in parsed) {
+                        arr.push(parsed[x]); //这个应该是个json对象
+                    }
+                    console.log(arr);
+                    return {
+                        results: arr
+                    };
+
+                },
+                cache: true
+                }
+        });
+
+    </script>
+
+
+{% endblock %}
+

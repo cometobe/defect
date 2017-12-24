@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}注册{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/login.css') }}">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-offset-4 col-lg-3 col-xs-offset-2 col-xs-8">
+
+                <form class="form-horizontal" role="form" method="post" action="{{ url_for('.register') }}">
+                    {{ form.csrf_token }}
+                    {{ form.hidden_tag() }}
+                    <p id="logintitle" class="text-left">&nbsp;用户注册</p>
+                    <div class="form-group">
+                        <div class="col-lg-12 col-xs-12">
+                            <i class="icon-user"
+                               style="background-image:url({{ url_for('static',filename='image/user.png') }})"></i>
+                            <input id="inputclass" type="text" class="form-control" name="username" placeholder="用户名"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-12 col-xs-12">
+                            <i class="icon-password"
+                               style="background-image:url({{ url_for('static',filename='image/password.png') }})"></i>
+                            <input id="inputclass2" type="password" class="form-control" name="password"
+                                   placeholder="密码"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-12 col-xs-12">
+                            <i class="icon-password"
+                               style="background-image:url({{ url_for('static',filename='image/password.png') }})"></i>
+                            <input id="inputclass3" type="password" class="form-control" name="confirmpassword"
+                                   placeholder="验证密码"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-12 col-xs-12">
+                            <i class="icon-code"
+                               style="background-image:url({{ url_for('static',filename='image/verify.png') }})"></i>
+                            <input id="inputclass3" type='text' class="form-control" name="verification_code"
+                                   placeholder="验证码"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-12 col-xs-12">
+                            <img id="reloadcode" src="../user/VerifyCode" onclick="loadXMLDoc('../user/VerifyCode')"
+                                 title="点击重新获取">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-12 col-xs-12">
+                            <input class="btn btn-large btn-block btn-info" type="submit" value="注册">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-12 col-xs-12">
+                    {% for message in get_flashed_messages() %}
+                        <div class="alert alert-warning">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    {% block scripts %}
+        <script type="text/javascript">
+            function AddImgClickEvent() {
+                var verifyImage = document.getElementById('reloadcode');
+                verifyImage.onclick = function () {
+                    var img_url = "{{ url_for('user.get_verify_code', _external=True) }}?d=" + Math.random();
+                    this.src = img_url;
+                }
+            }
+
+            AddImgClickEvent();
+        </script>
+    {% endblock %}
+{% endblock %}
+

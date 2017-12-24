@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+
+{% block title %}缺陷跟踪{% endblock %}
+
+{% block mainbody %}
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-lg-12 col-xs-12 column">
+                <div class="tabbable" id="tabs-452184">
+                    <div class="col-lg-2 col-xs-2 column">
+                        <div class="form-group">
+
+                            <input id="fat-btn" class="btn btn-default form-group" type="button" value='下载excel'
+                                   onclick=location.href='{{ url_for(".defectexcel") }}'>
+                            </input>
+                        </div>
+                    </div>
+                    <div class="col-lg-10 col-xs-10 column">
+                        <form class="form-horizontal" role="form" method="post"
+                              action="{{ url_for('defect.defectdisplay') }}" enctype=multipart/form-data>
+                            <input class="form-actions" type="submit" value="上传">
+                            <input id="lefile" type="file" name=file style="display:none" class="form-inline">
+                            <input id="photoCover" class="input-large" type="text" style="height:30px;">
+                            <a class="btn" onclick="$('input[id=lefile]').click();">浏览</a>
+                        </form>
+                    </div>
+                    <div class="form-group">
+                        {% for message in get_flashed_messages() %}
+                            <div class="alert alert-warning col-lg-12 col-xs-12">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <table class="table table-hover table-condensed">
+                            <tr>
+                                <th style="text-align:center;">编号</th>
+                                <th style="text-align:center;">电压等级</th>
+                                <th style="text-align:center;">设备名称</th>
+                                <th style="text-align:center;">设备部件</th>
+                                <th style="text-align:center;">缺陷描述</th>
+                                <th style="text-align:center;">缺陷隐患后果</th>
+                                <th style="text-align:center;">缺陷等级</th>
+                                <th style="text-align:center;">发现时间</th>
+                                <th style="text-align:center;">短期控制措施</th>
+                                <th style="text-align:center;">完成时间</th>
+                                <th style="text-align:center;">中期控制措施</th>
+                                <th style="text-align:center;">完成时间</th>
+                                <th style="text-align:center;">长期控制措施</th>
+                                <th style="text-align:center;">完成时间</th>
+                                <th style="text-align:center;">消缺班组</th>
+                                <th style="text-align:center;">负责人</th>
+                                <th style="text-align:center;">月度完成情况</th>
+                            </tr>
+                            {% for x in defects %}
+                                <tr>
+                                    <td align="center">
+                                        <a href="{{ url_for('defect.defectedit',defectid=x.defectId) }}">{{ x.defectId }}</a>
+                                    </td>
+                                    <td align="center">
+                                        {{ x.voltageGrade }}
+                                    </td>
+                                    <td align="center">
+                                        {{ x.defectDev }}
+                                    </td>
+                                    <td align="center">
+                                        {{ '' if x.defectPart == None else x.defectPart }}
+                                    </td>
+                                    <td align="center">
+                                        {{ x.defectDescription }}
+                                    </td>
+                                    <td align="center">
+                                        {{ '' if x.defectCause == None else x.defectCause }}
+                                    </td>
+                                    <td align="center">
+                                        {{ x.defectGrade }}
+                                    </td>
+                                    <td align="center">
+                                        {{ x.defectFindTime }}
+                                    </td>
+                                    <td align="center">
+                                        {{ '' if x.shortAction == None else x.shortAction }}
+                                    </td>
+                                    <td align="center">
+                                        {{ '' if x.shortTime == None else x.shortTime }}
+                                    </td>
+                                    <td align="center">
+                                        {{ '' if x.middleAction == None else x.middleAction }}
+                                    </td>
+                                    <td align="center">
+                                        {{ '' if x.middleTime == None else x.middleTime }}
+                                    <td align="center">
+                                        {{ '' if x.longAction == None else x.longAction }}
+                                    </td>
+                                    <td align="center">
+                                        {{ '' if x.longTime == None else x.longTime }}
+                                    </td>
+                                    <td align="center">
+                                        {{ '' if x.defectRemoveTeam == None else x.defectRemoveTeam }}
+                                    </td>
+                                    <td align="center">
+                                        {{ x.deviceMaster }}
+                                    </td>
+                                    <td align="center">
+                                        {{ '' if x.workHaveDone == None else x.workHaveDone }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            {% for y in perils %}
+                                <tr>
+                                    <td align="center">
+                                        <a href="{{ url_for('defect.periledit',perilId=y.perilId) }}">{{ y.perilId }}</a>
+                                    </td>
+                                    <td align="center">
+                                        {{ '' if y.perilVolt== None else y.perilVolt }}
+                                    </td>
+                                    <td align="center">
+                                        {{ y.perilTitle }}
+                                    </td>
+                                    <td align="center">
+                                        {{ '' if y.perilPart== None else y.perilPart }}
+                                    </td>
+                                    <td align="center">
+                                        {{ y.perilDescription }}
+                                    </td>
+                                    <td align="center">
+                                        {{ '' if y.perilCause == None else y.perilCause }}
+                                    </td>
+                                    <td align="center">
+                                        {{ y.perilGrade }}
+                                    </td>
+                                    <td align="center">
+                                        {{ y.perilFindTime }}
+                                    </td>
+                                    <td align="center">
+                                        {{ '' if y.shortAction == None else y.shortAction }}
+                                    </td>
+                                    <td align="center">
+                                        {{ '' if y.shortTime == None else y.shortTime }}
+                                    </td>
+                                    <td align="center">
+                                        {{ '' if y.middleAction == None else y.middleAction }}
+                                    </td>
+                                    <td align="center">
+                                        {{ '' if y.middleTime == None else y.middleTime }}
+                                    <td align="center">
+                                        {{ '' if y.longAction == None else y.longAction }}
+                                    </td>
+                                    <td align="center">
+                                        {{ '' if y.longTime == None else y.longTime }}
+                                    </td>
+                                    <td align="center">
+                                        {{ '' if y.perilRemoveTeam == None else y.perilRemoveTeam }}
+                                    </td>
+                                    <td align="center">
+                                        {{ '' if y.deviceMaster == None else y.deviceMaster }}
+                                    </td>
+                                    <td align="center">
+                                        {{ '' if y.workHaveDone == None else y.workHaveDone }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+{% endblock %}
+{% block s %}
+    <script type="text/javascript">
+        $('input[id=lefile]').change(function () {
+            $('#photoCover').val($(this).val());
+        });
+    </script>
+{% endblock s %}

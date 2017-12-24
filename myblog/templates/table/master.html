@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}设备主人分工{% endblock %}
+
+{% block mainbody %}
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div class="tabbable" id="tabs-452184">
+                    <div class="form-group">
+                        <div class="form-group">
+                            <form class="navbar-form navbar-left" role="search"
+                                  action="{{ url_for('table.mastertable') }}" method="post">
+                                <div class="form-group">
+                                    <input name="devclass" type="text" class="form-control" placeholder="设备类型"/>
+                                    <input name="devname" type="text" class="form-control" placeholder="设备名称"/>
+                                    <input name="devHealth" type="text" class="form-control" placeholder="健康度"/>
+                                    <input name="devImportance" type="text" class="form-control" placeholder="重要度"/>
+                                    <input name="devManageGrade" type="text" class="form-control" placeholder="管控级别"/>
+                                    <br><input name="devmas" type="text" class="form-control" placeholder="设备主人"/>
+                                </div>
+                                <button id="btn" type="submit" class="btn btn-default">搜索</button>
+                            </form>
+                        </div>
+                        <div>
+                            <table class="table table-hover table-condensed">
+                                <tr>
+                                    <th style="text-align:center;">序号</th>
+                                    <th style="text-align:center;">设备名称</th>
+                                    <th style="text-align:center;">设备类型</th>
+                                    <th style="text-align:center;">设备重要度</th>
+                                    <th style="text-align:center;">设备健康度</th>
+                                    <th style="text-align:center;">设备管控级别</th>
+                                    <th style="text-align:center;">设备主人</th>
+                                </tr>
+                                {% for x in devtable %}
+                                    <tr>
+                                        <td align="center">
+                                            {{ x.devid }}
+                                        </td>
+                                        <td align="center">
+                                            {{ x.devname }}
+                                        </td>
+                                        <td align="center">
+                                            {{ x.devclass }}
+                                        </td>
+                                        <td align="center">
+                                            {{ x.devImportance }}
+                                        </td>
+                                        <td align="center">
+                                            {{ x.devHealth }}
+                                        </td>
+                                        <td align="center">
+                                            {{ x.devManageGrade }}
+                                        </td>
+                                        <td align="center">
+                                            {{ x.devmas }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                            <table id="test" border="1" width="800">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

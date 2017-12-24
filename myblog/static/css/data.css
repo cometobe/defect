@@ -1,0 +1,70 @@
+.domain{
+    fill:none;
+    stroke:grey;
+    stroke-width: 1;
+}
+.tick line{
+    fill:none;
+    stroke:grey;
+    stroke-width: 1;
+}
+
+.axisx path,
+.axisx line,
+.axisy path,
+.axisy line{
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+.axisx text {
+    font-family: sans-serif;
+    font-size: 11px;
+    opacity: 0;
+}
+
+.axisy text {
+    font-family: 微软雅黑;
+    font-size: 14px;
+}
+
+.MyRect {
+    font-family: 微软雅黑;
+    font-size: 14px;
+}
+
+.MyText {
+    fill: white;
+    text-anchor: middle;
+    font-family: 微软雅黑;
+    font-size: 14px;
+}
+text.MyX{
+    font-family: 微软雅黑;
+    font-size: 14px;
+}
+text.title{
+    font-size:30px;
+    font-family: 微软雅黑;
+}
+
+
+/*stack*/
+.stackaxisx path,
+.stackaxisx line,
+.stackaxisy path,
+.stackaxisy line{
+	fill: none;
+	stroke: black;
+	shape-rendering: crispEdges;
+}
+
+.stackaxisx text {
+    font-family: 微软雅黑;
+    font-size: 14px;
+}
+.stackaxisy text {
+    font-family: 微软雅黑;
+    font-size: 14px;
+}

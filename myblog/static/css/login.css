@@ -1,0 +1,67 @@
+.loginform {
+    width: 300px;
+    margin: 0 auto;
+}
+
+#logintitle {
+    font-size: 32px;
+    letter-spacing: 8px;
+}
+
+#username {
+    font-size: 24px;
+    letter-spacing: 8px;
+}
+
+.checkbox {
+    vertical-align: middle;
+    margin-right: 3px;
+}
+
+.div-bor {
+    position: relative;
+    width: 200px;
+}
+
+#inputclass,#inputclass2,#inputclass3{
+    padding-left: 32px;
+}
+
+.icon-user {
+    position: absolute;
+    /*z-index: 5;*/
+    /*background-image: url(../image/user.png); !*引入图片图片*!*/
+    background-repeat: no-repeat; /*设置图片不重复*/
+    background-position: 0px 0px; /*图片显示的位置*/
+    background-size:80%;
+    width: 30px; /*设置图片显示的宽*/
+    height: 30px; /*图片显示的高*/
+    top: 6px;
+    left: 20px;
+}
+
+.icon-password {
+    position: absolute;
+    /*z-index: 5;*/
+    /*background-image: url(../image/user.png); !*引入图片图片*!*/
+    background-repeat: no-repeat; /*设置图片不重复*/
+    background-position: 0px 0px; /*图片显示的位置*/
+    background-size:70%;
+    width: 30px; /*设置图片显示的宽*/
+    height: 30px; /*图片显示的高*/
+    top: 2px;
+    left: 20px;
+}
+
+.icon-code {
+    position: absolute;
+    /*z-index: 5;*/
+    /*background-image: url(../image/user.png); !*引入图片图片*!*/
+    background-repeat: no-repeat; /*设置图片不重复*/
+    background-position: 0px 0px; /*图片显示的位置*/
+    background-size:60%;
+    width: 30px; /*设置图片显示的宽*/
+    height: 30px; /*图片显示的高*/
+    top: 4px;
+    left: 22px;
+}

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}缺陷跟踪{% endblock %}
+{% block mainbody %}
+    <div class="container">
+        <div class="row-fluid">
+            <div class="col-lg-12 col-xs-12">
+                <div class="tabbable" id="tabs-452184">
+                    <table class="table table-hover table-condensed">
+                        <tr>
+                            <th style="text-align:center;">电压等级</th>
+                            <th style="text-align:center;">设备名称</th>
+                            <th style="text-align:center;">设备部件</th>
+                            <th style="text-align:center;">缺陷描述</th>
+                            <th style="text-align:center;">缺陷等级</th>
+                            <th style="text-align:center;">发现时间</th>
+                            <th style="text-align:center;">短期控制措施</th>
+                            <th style="text-align:center;">完成时间</th>
+                            <th style="text-align:center;">中期控制措施</th>
+                            <th style="text-align:center;">完成时间</th>
+                            <th style="text-align:center;">长期控制措施</th>
+                            <th style="text-align:center;">完成时间</th>
+                            <th style="text-align:center;">消缺班组</th>
+                            <th style="text-align:center;">负责人</th>
+                            <th style="text-align:center;">月度完成情况</th>
+                        </tr>
+                        {% for x in defecttable %}
+                            <tr>
+                                <td align="center">
+                                    {{ x.voltageGrade }}
+                                </td>
+                                <td align="center">
+                                    {{ x.defectDev }}
+                                </td>
+                                <td align="center">
+                                    {{ x.defectPart }}
+                                </td>
+                                <td align="center">
+                                    {{ x.defectDescription }}
+                                </td>
+                                <td align="center">
+                                    {{ x.defectGrade }}
+                                </td>
+                                <td align="center">
+                                    {{ x.defectFindTime }}
+                                </td>
+                                <td align="center">
+                                    {{ x.shortAction }}
+                                </td>
+                                <td align="center">
+                                    {{ x.shortTime }}
+                                </td>
+                                <td align="center">
+                                    {{ x.middleAction }}
+                                </td>
+                                <td align="center">
+                                    {{ x.middleTime }}
+                                <td align="center">
+                                    {{ x.longAction }}
+                                </td>
+                                <td align="center">
+                                    {{ x.longTime }}
+                                </td>
+                                <td align="center">
+                                    {{ x.defectRemoveTeam }}
+                                </td>
+                                <td align="center">
+                                    {{ x.deviceMaster }}
+                                </td>
+                                <td align="center">
+                                    {{ x.workHaveDone }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock mainbody %}

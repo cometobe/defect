@@ -1,0 +1,58 @@
+#posttitle {
+    text-align: center;
+    min-height: 30px;
+}
+
+#posttext {
+    text-align: left;
+
+}
+
+#poster {
+    text-align: left;
+
+}
+
+.posttitlediv {
+    text-align: center;
+    min-height: 40px;
+}
+
+.posttextdiv {
+    text-align: left;
+    min-height: 60px;
+}
+
+.posterdiv {
+    text-align: left;
+    min-height: 30px;
+}
+
+.posttagdiv {
+    min-height: 30px;
+}
+
+/*.img-img{*/
+
+    /*float: left;*/
+    /*padding: 2px;*/
+    /*margin: 20px;*/
+/*}*/
+/*.post-title{*/
+    /*padding-left: 140px;*/
+    /*height: 50px;*/
+    /*margin-top: 10px;*/
+
+/*!*}*!*/
+.img-img {float:left;margin:1px;width:80px;height:80px; padding-top: 5%;text-align:center}
+/*.post-title {float:right;}*/
+
+
+ul li{
+    list-style-type:none;
+}
+hr{
+    height:2px;
+    border:none;
+    border-top:1px ridge green;
+}

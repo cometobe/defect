@@ -1,0 +1,731 @@
+{% extends 'base.html' %}
+
+{% block title %}可视化
+
+{% endblock %}
+
+{% block mainbody %}
+    <div class="container">
+
+
+
+            <link rel="stylesheet" href="{{ url_for('static',filename='css/diagram.css') }}">
+            <script type="text/javascript" src="{{ url_for('static',filename='js/jquery.js') }}"></script>
+            <script type="text/javascript" src="{{ url_for('static',filename='js/adscreen.js') }}"></script>
+            <script>    var counts = {{ devinfo | tojson | safe}};</script>
+            <script type="text/javascript" src="{{ url_for('static',filename='js/diagram.js') }}"></script>
+
+            <div id="svg1" display="none">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1" height="1" viewBox="0,0,100,100">
+                    <defs>
+                        <symbol id=cb><!--//断路器原图-->
+                            <line x1="5" y1="0.1" x2="5" y2="5" stroke-width="1"/>
+                            <line x1="5" y1="11.8" x2="5" y2="16.3" stroke-width="1"/>
+                            <rect x="3" y="5" width="4" height="7" fill="none" stroke-width="1"/>
+                        </symbol>
+                        <symbol id=dz><!--//画刀闸原型(横)-->
+                            <line x1="1" y1="5" x2="6.5" y2="5" stroke-width="1"/>
+                            <line x1="6" y1="5" x2="10" y2="1" stroke-width="1"/>
+                            <line x1="10" y1="3.5" x2="10" y2="6.5" stroke-width="1"/>
+                            <line x1="10" y1="5" x2="16" y2="5" stroke-width="1"/>
+                        </symbol>
+                        <symbol id=ct><!--//画CT原型-->
+                            <line x1="5" y1="0" x2="5" y2="16.2" stroke-width="1"/>
+                            <circle cx="5" cy="8" r="4" stroke-width="1"/>
+                            <line x1="9" y1="8" x2="12" y2="8" stroke-width="1"/>
+                        </symbol>
+                        <symbol id=dg><!--//画电抗原型-->
+                            <line x1="5" y1="0" x2="5" y2="5.5" stroke-width="1"/>
+                            <line x1="0.5" y1="9" x2="5" y2="9" stroke-width="1"/>
+                            <line x1="5" y1="8.5" x2="5" y2="16" stroke-width="1"/>
+                            <path d=" M5,5 A4,4 0 1 1 1,9" stroke-width="1" fill-opacity="0"
+                                  transform="rotate(360 10,19)" de/>
+                        </symbol>
+                        <symbol id=dd><!--//画地刀原型-->
+                            <line x1="1" y1="5" x2="6.5" y2="5" stroke-width="1"/>
+                            <line x1="6" y1="3.5" x2="6" y2="6.5" stroke-width="1"/>
+                            <line x1="6" y1="0.5" x2="11" y2="5" stroke-width="1"/>
+                            <line x1="10.5" y1="5" x2="16" y2="5" stroke-width="1"/>
+                            <line x1="16" y1="2.5" x2="16" y2="7.5" stroke-width="0.9"/>
+                            <line x1="18" y1="3.5" x2="18" y2="6.5" stroke-width="0.7"/>
+                            <line x1="20" y1="4.5" x2="20" y2="5.5" stroke-width="0.7"/>
+                        </symbol>
+                        <symbol id=ytrans><!--//画星型变压器-->
+                            <line x1="5" y1="1" x2="5" y2="6" stroke-width="1"/>
+                            <circle cx="5" cy="10" r="4.5" fill="white" fill-opacity="0" stroke-width="1"/>
+                            <circle cx="5" cy="14" r="4.5" fill="white" fill-opacity="0" stroke-width="1"/>
+                            <line x1="5" y1="18" x2="5" y2="22" stroke-width="1"/>
+                            <line x1="3.5" y1="7.5" x2="5" y2="10" stroke-width="1"/>
+                            <line x1="6.5" y1="7.5" x2="5" y2="10" stroke-width="1"/>
+                            <line x1="5" y1="12.4" x2="5" y2="10" stroke-width="1"/>
+                            <line x1="3.5" y1="12.5" x2="5" y2="15" stroke-width="1"/>
+                            <line x1="6.5" y1="12.5" x2="5" y2="15" stroke-width="1"/>
+                            <line x1="5" y1="17.5" x2="5" y2="15" stroke-width="1"/>
+                        </symbol>
+                        <symbol id=dtrans><!--//画角型变压器-->
+                            <line x1="5" y1="1" x2="5" y2="6" stroke-width="1"/>
+                            <circle cx="5" cy="10" r="4.5" fill="white" fill-opacity="0" stroke-width="1"/>
+                            <circle cx="5" cy="14" r="4.5" fill="white" fill-opacity="0" stroke-width="1"/>
+                            <line x1="5" y1="18" x2="5" y2="22" stroke-width="1"/>
+                            <line x1="3.5" y1="7.5" x2="5" y2="10" stroke-width="1"/>
+                            <line x1="6.5" y1="7.5" x2="5" y2="10" stroke-width="1"/>
+                            <line x1="5" y1="12.4" x2="5" y2="10" stroke-width="1"/>
+                            <polygon points="5,14 3.5,16.5 6.5,16.5" stroke-width="1" fill-opacity="0"/>
+                        </symbol>
+                        <symbol id=cap><!--//画电容器-->
+                            <line x1="5" y1="1" x2="5" y2="7" stroke-width="1"/>
+                            <line x1="1.5" y1="7" x2="8.5" y2="7" stroke-width="1"/>
+                            <line x1="1.5" y1="10" x2="8.5" y2="10" stroke-width="1"/>
+                            <line x1="5" y1="10" x2="5" y2="16" stroke-width="1"/>
+                        </symbol>
+                        <symbol id=res><!--//画电阻器-->
+                            <polyline points="5,1 5,6 7.5,8 2.5,10 7.5,12 2.5,14 5,16 5,20" stroke-width="1"
+                                      fill-opacity="0"/>
+                        </symbol>
+                        <symbol id=blq><!--//画避雷器-->
+                            <polygon points="3,5 5,5 5,0 5,5 7,5 7,11 5,11 5,16 5,11 3,11" stroke-width="1"/>
+                            <polygon points="5,9 4,7 6,7" stroke-width="1"/>
+                            <line x1="5" y1="5" x2="5" y2="9" stroke-width="1"/>
+                        </symbol>
+                        <symbol id=blqjd><!--//画避雷器接地-->
+                            <line x1="5" y1="0.1" x2="5" y2="5" stroke-width="1"/>
+                            <line x1="5" y1="11.8" x2="5" y2="16.3" stroke-width="1"/>
+                            <rect x="3" y="5" width="4" height="7" fill="none" stroke-width="1"/>
+                            <polygon points="5,9 4,7 6,7" stroke-width="1"/>
+                            <line x1="5" y1="5" x2="5" y2="9" stroke-width="1"/>
+                            <line x1="2.5" y1="16" x2="7.5" y2="16" stroke-width="0.9"/>
+                            <line x1="3.5" y1="18" x2="6.5" y2="18" stroke-width="0.7"/>
+                            <line x1="4.5" y1="20" x2="5.5" y2="20" stroke-width="0.7"/>
+                        </symbol>
+                        <symbol id=cvt><!--//画电压互感器-->
+                            <line x1="8" y1="1" x2="8" y2="5" stroke-width="1"/>
+                            <line x1="4" y1="5" x2="12" y2="5" stroke-width="1"/>
+                            <line x1="4" y1="7" x2="12" y2="7" stroke-width="1"/>
+                            <line x1="8" y1="7" x2="8" y2="20" stroke-width="1"/>
+                            <line x1="8" y1="15" x2="15" y2="15" stroke-width="1"/>
+                            <line x1="4" y1="20" x2="12" y2="20" stroke-width="1"/>
+                            <line x1="4" y1="22" x2="12" y2="22" stroke-width="1"/>
+                            <line x1="8" y1="22" x2="8" y2="26" stroke-width="1"/>
+                            <line x1="5.5" y1="26" x2="10.5" y2="26" stroke-width="1"/>
+                            <line x1="6.5" y1="28" x2="9.5" y2="28" stroke-width="1"/>
+                            <line x1="7.5" y1="30" x2="8.5" y2="30" stroke-width="1"/>
+                            <circle cx="19.5" cy="15" r="4.5" fill-opacity="0" stroke-width="1"/>
+                            <circle cx="26" cy="15" r="4.5" fill-opacity="0" stroke-width="1"/>
+                            <circle cx="23" cy="8" r="4.5" fill-opacity="0" stroke-width="1"/>
+                            <circle cx="23" cy="22" r="4.5" fill-opacity="0" stroke-width="1"/>
+                            <line x1="17" y1="15" x2="21.5" y2="15" stroke-width="1"/>
+                            <line x1="23.5" y1="15" x2="29" y2="15" stroke-width="1"/>
+                            <line x1="20.5" y1="8" x2="25.5" y2="8" stroke-width="1"/>
+                            <line x1="20.5" y1="22" x2="25.5" y2="22" stroke-width="1"/>
+                        </symbol>
+                        <symbol id=pt><!--//画PT-->
+                            <line x1="1" y1="15" x2="5" y2="15" stroke-width="0.8"/>
+                            <circle cx="9.5" cy="15" r="4.5" fill-opacity="0" stroke-width="0.8"/>
+                            <circle cx="16" cy="15" r="4.5" fill-opacity="0" stroke-width="0.8"/>
+                            <circle cx="13" cy="8" r="4.5" fill-opacity="0" stroke-width="0.8"/>
+                            <circle cx="13" cy="22" r="4.5" fill-opacity="0" stroke-width="0.8"/>
+                            <line x1="16" y1="15" x2="16" y2="18" stroke-width="0.5"/>
+                            <line x1="16" y1="15" x2="14" y2="13.5" stroke-width="0.5"/>
+                            <line x1="16" y1="15" x2="18.5" y2="13.5" stroke-width="0.5"/>
+                            <line x1="13" y1="8" x2="13" y2="10" stroke-width="0.5"/>
+                            <line x1="13" y1="8" x2="11" y2="6.5" stroke-width="0.5"/>
+                            <line x1="13" y1="8" x2="15" y2="6.5" stroke-width="0.5"/>
+                            <line x1="13" y1="22" x2="13" y2="24" stroke-width="0.5"/>
+                            <line x1="13" y1="22" x2="11" y2="20.5" stroke-width="0.5"/>
+                            <line x1="13" y1="22" x2="15" y2="20.5" stroke-width="0.5"/>
+                        </symbol>
+                        <symbol id=dz2><!--//画刀闸（竖）-->
+                            <line x1="5" y1="0" x2="5" y2="6.5" stroke-width="1"/>
+                            <line x1="5" y1="10" x2="1" y2="6" stroke-width="1"/>
+                            <line x1="3.5" y1="6" x2="6.5" y2="6" stroke-width="1"/>
+                            <line x1="5" y1="10" x2="5" y2="16.5" stroke-width="1"/>
+                        </symbol>
+                        <symbol id=vav><!--//画阀-->
+                            <line x1="5" y1="1" x2="5" y2="20" stroke-width="1"/>
+                            <line x1="1" y1="15" x2="9" y2="15" stroke-width="1"/>
+                            <line x1="7.5" y1="11" x2="10" y2="11" stroke-width="1"/>
+                            <polygon points="5,15 1,8 9,8" stroke-width="1" fill-opacity="0"/>
+                        </symbol>
+                        <symbol id=dcpt><!--//画分压器-->
+                            <polygon points="3,5 5,5 5,0 5,5 7,5 7,11 5,11 5,16 5,11 3,11" stroke-width="1"/>
+                            <line x1="7" y1="9" x2="10" y2="9" stroke-width="1"/>
+                            <line x1="2.5" y1="16" x2="7.5" y2="16" stroke-width="0.9"/>
+                            <line x1="3.5" y1="18" x2="6.5" y2="18" stroke-width="0.7"/>
+                            <line x1="4.5" y1="20" x2="5.5" y2="20" stroke-width="0.7"/>
+                        </symbol>
+                        <symbol id=dcct><!--//画分流器-->
+                            <polygon points="3,5 5,5 5,0 5,5 7,5 7,11 5,11 5,16 5,11 3,11" stroke-width="1"/>
+                            <line x1="7" y1="5" x2="10" y2="5" stroke-width="1"/>
+                            <line x1="7" y1="11" x2="10" y2="11" stroke-width="1"/>
+                        </symbol>
+                        <symbol id=earth><!--//画独立接地-->
+                            <line x1="5" y1="1" x2="5" y2="6" stroke-width="1"/>
+                            <line x1="2.5" y1="6" x2="7.5" y2="6" stroke-width="0.9"/>
+                            <line x1="3.5" y1="8" x2="6.5" y2="8" stroke-width="0.7"/>
+                            <line x1="4.5" y1="10" x2="5.5" y2="10" stroke-width="0.7"/>
+                        </symbol>
+                        <marker id="markerArrow" markerWidth="11" markerHeight="11" refx="2" refy="5" orient="auto"
+                                viewBox="0 0 20 20">
+                            <path d="M2,2 L2,8 L11,5 z" style="fill:black;"/>
+                        </marker><!--定义箭头-->
+                    </defs>
+                </svg>
+            </div>
+            <div class="container-fluid">
+                <div class="row clearfix">
+                    <div class="col-lg-12 col-xs-12">
+                        <div id="btnright" class="btn-group" class="col-lg-12 col-xs-12">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">切换视图
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="javascript:void(0);" onclick="showmanagecolor();return false;">管控级别</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);" onclick="showhealthcolor();return false;">健康度</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);" onclick="showimportancecolor();return false;">重要度</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tabbable col-lg-12 col-xs-12" id="tabs-452184">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a href="#panel-177957" data-toggle="tab">交流场</a>
+                                </li>
+                                <li>
+                                    <a href="#panel-795191" data-toggle="tab">滤波场</a>
+                                </li>
+                                <li>
+                                    <a href="#panel-795192" data-toggle="tab">换流区</a>
+                                </li>
+                                <li>
+                                    <a href="#panel-795193" data-toggle="tab">直流场</a>
+                                </li>
+                                <li>
+                                    <a href="#panel-795194" data-toggle="tab">站用电</a>
+                                </li>
+                                <li>
+                                    <a href="#panel-795195" data-toggle="tab">二次设备</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content col-lg-12 col-xs-12">
+                                <div class="tab-pane active" id="panel-177957">
+                                    <div id="jlcsvg1">
+                                        <svg id="jlcsvg" preserveAspectRatio="xMinYMin meet"
+                                             xmlns="http://www.w3.org/2000/svg"
+                                             version="1.1" viewBox="0,0,1280,720">
+                                            <!--rect x="0" y="0" width="100%" height="100%" fill ="white" stroke="red"  stroke-width="1"/-->
+                                            <line id="326" x1="100" y1="101" x2="1100" y2="101" stroke="grey"
+                                                  stroke-width="2"/>
+                                            <!--//#2母-->
+                                            <line id="331" x1="100" y1="484" x2="1100" y2="484" stroke="grey"
+                                                  stroke-width="2"/>
+                                            <!--//#1母-->
+                                            <text x="1050" dy="479" style="fill:black;font-size:10px;">500kV #1M</text>
+                                            <text x="1050" dy="097" style="fill:black;font-size:10px;">500kV #2M</text>
+                                            <use id="221" 50132 x="500" y="50" xlink:href="#dz2" transform="scale(2)"
+                                                 fill="none" stroke="grey"/><!--//第一串-->
+                                            <use id="219" 5013 x="500" 5013 y="66" xlink:href="#cb" transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="225" 5013CT x="500" y="82" xlink:href="#ct" transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="220" 50131 x="500" y="98" xlink:href="#dz2" transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="213" 50122隔离开关 x="500" y="114" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="211" 500kV第一串联络5012断路器 x="500" y="130" xlink:href="#cb"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="216" 5012断路器电流互感器 x="500" y="146" xlink:href="#ct"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="212" 50121隔离开关 x="500" y="162" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="197" 50112隔离开关 x="500" y="178" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="201" 5011断路器电流互感器 x="500" y="194" xlink:href="#ct"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="196" 500kV安高Ⅱ线5011断路器 x="500" y="210" xlink:href="#cb"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="204" 50111隔离开关 x="500" y="226" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <!--//第一串地刀-->
+                                            <use id="223" 501327 x="504" y="61" xlink:href="#dd" transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="222" 501317 x="504" y="93" xlink:href="#dd" transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="224" 501367 x="504" y="109" xlink:href="#dd" transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="215" 500kV安高Ⅱ线极二换流变 501227接地刀闸 x="504" y="125" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="214" 500kV安高Ⅱ线 极二换流变 501217接地刀闸 x="504" y="157" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="200" 500kV安高Ⅱ线 501167接地刀闸 x="504" y="173" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="199" 500kV安高Ⅱ线 501127接地刀闸 x="504" y="189" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="198" 500kV安高Ⅱ线 501117接地刀闸 x="504" y="221" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="332" 5217 x="-51" y="500" xlink:href="#dd"
+                                                 transform="scale(2) rotate(270 0 0)" fill="none" stroke="grey"/>
+                                            <use id="327" 5117 x="241" y="-510" xlink:href="#dd"
+                                                 transform="scale(2) rotate(90 0 0)" fill="none" stroke="grey"/>
+                                            <text x="970" dy="120" style="fill:black;font-size:10px;">50132</text>
+                                            <!--//第一串标注-->
+                                            <text x="970" dy="152" style="fill:black;font-size:10px;">5013</text>
+                                            <text x="970" dy="214" style="fill:black;font-size:10px;">50131</text>
+                                            <text x="970" dy="246" style="fill:black;font-size:10px;">50122</text>
+                                            <text x="970" dy="280" style="fill:black;font-size:10px;">5012</text>
+                                            <text x="970" dy="340" style="fill:black;font-size:10px;">50121</text>
+                                            <text x="970" dy="375" style="fill:black;font-size:10px;">50112</text>
+                                            <text x="970" dy="440" style="fill:black;font-size:10px;">5011</text>
+                                            <text x="970" dy="470" style="fill:black;font-size:10px;">50111</text>
+                                            <text x="1053" dy="135" style="fill:black;font-size:10px;">501327</text>
+                                            <text x="1053" dy="200" style="fill:black;font-size:10px;">501317</text>
+                                            <text x="1053" dy="232" style="fill:black;font-size:10px;">501367</text>
+                                            <text x="1053" dy="264" style="fill:black;font-size:10px;">501227</text>
+                                            <text x="1053" dy="328" style="fill:black;font-size:10px;">501217</text>
+                                            <text x="1053" dy="360" style="fill:black;font-size:10px;">501167</text>
+                                            <text x="1053" dy="391" style="fill:black;font-size:10px;">501127</text>
+                                            <text x="1053" dy="455" style="fill:black;font-size:10px;">501117</text>
+                                            <text x="1023" dy="501" style="fill:black;font-size:10px;">5117</text>
+                                            <text x="1023" dy="89" style="fill:black;font-size:10px;">5217</text>
+                                            <!--//第二串-->
+                                            <use id="246" 50232隔离开关 x="400" y="50" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/><!--//第2串-->
+                                            <use id="244" 500kV第一大组交流滤波器5023断路器 x="400" y="66" xlink:href="#cb"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="250" 5023断路器电流互感器 x="400" y="82" xlink:href="#ct"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="245" 50231隔离开关 x="400" y="98" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="238" 50222隔离开关 x="400" y="114" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="236" 500kV第二串联络5022断路器 x="400" y="130" xlink:href="#cb"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="241" 5022断路器电流互感器 x="400" y="146" xlink:href="#ct"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="237" 50221隔离开关 x="400" y="162" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="230" 50212隔离开关 x="400" y="178" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="234" 5021断路器电流互感器 x="400" y="194" xlink:href="#ct"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="228" 500kV极1换流变进线5021断路器 x="400" y="210" xlink:href="#cb"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="229" 50211隔离开关 x="400" y="226" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <!--//第2串地刀-->
+                                            <use id="248" 500kV第一大组交流滤波器502327接地刀闸 x="404" y="61" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="247" 500kV第一大组交流滤波器502317接地刀闸 x="404" y="93" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="249" 500kV第一大组交流滤波器502367接地刀闸 x="404" y="109" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="240" 500kV极一换流变 ACF1 502227接地刀闸 x="404" y="125" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="239" 500kV极一换流变 ACF1 502217接地刀闸 x="404" y="157" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="233" 500kV极一换流变 502167接地刀闸 x="404" y="173" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="232" 500kV极一换流变 502127接地刀闸 x="404" y="189" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="231" 500kV极一换流变 502117接地刀闸 x="404" y="221" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <text x="770" dy="120" style="fill:black;font-size:10px;">50232</text>
+                                            <!--//第2串标注-->
+                                            <text x="770" dy="152" style="fill:black;font-size:10px;">5023</text>
+                                            <text x="770" dy="214" style="fill:black;font-size:10px;">50231</text>
+                                            <text x="770" dy="246" style="fill:black;font-size:10px;">50222</text>
+                                            <text x="770" dy="280" style="fill:black;font-size:10px;">5022</text>
+                                            <text x="770" dy="340" style="fill:black;font-size:10px;">50221</text>
+                                            <text x="770" dy="375" style="fill:black;font-size:10px;">50212</text>
+                                            <text x="770" dy="440" style="fill:black;font-size:10px;">5021</text>
+                                            <text x="770" dy="470" style="fill:black;font-size:10px;">50211</text>
+                                            <text x="853" dy="135" style="fill:black;font-size:10px;">502327</text>
+                                            <text x="853" dy="200" style="fill:black;font-size:10px;">502317</text>
+                                            <text x="853" dy="232" style="fill:black;font-size:10px;">502367</text>
+                                            <text x="853" dy="264" style="fill:black;font-size:10px;">502227</text>
+                                            <text x="853" dy="328" style="fill:black;font-size:10px;">502217</text>
+                                            <text x="853" dy="360" style="fill:black;font-size:10px;">502167</text>
+                                            <text x="853" dy="391" style="fill:black;font-size:10px;">502127</text>
+                                            <text x="853" dy="455" style="fill:black;font-size:10px;">502117</text>
+                                            <!--//第三串-->
+                                            <use id="272" 50332隔离开关 x="300" y="50" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/><!--//第3串-->
+                                            <use id="270" 500kV安高Ⅰ线5033断路器 x="300" y="66" xlink:href="#cb"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="276" 5033断路器电流互感器 x="300" y="82" xlink:href="#ct"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="271" 50331隔离开关 x="300" y="98" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="264" 50322隔离开关 x="300" y="114" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="262" 500kV第三串联络5032断路器 x="300" y="130" xlink:href="#cb"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="266" 5032断路器电流互感器 x="300" y="146" xlink:href="#ct"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="263" 50321隔离开关 x="300" y="162" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="255" 50312隔离开关 x="300" y="178" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="259" 5031断路器电流互感器 x="300" y="194" xlink:href="#ct"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="253" 500kV第三大组交流滤波器5031断路器 x="300" y="210" xlink:href="#cb"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="254" 50311隔离开关 x="300" y="226" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <!--//第2串地刀-->
+                                            <use id="274" 500kV安高Ⅰ线503327接地刀闸 x="304" y="61" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="273" 500kV安高Ⅰ线503317接地刀闸 x="304" y="93" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="275" 500kV安高Ⅰ线503367接地刀闸 x="304" y="109" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="269" 500kV ACF3 安高Ⅰ线503227接地开关 x="304" y="125" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="265" 500kV ACF3 安高Ⅰ线503217接地开关 x="304" y="157" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="258" 500kV第三大组交流滤波器503167接地刀闸 x="304" y="173" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="257" 500kV第三大组交流滤波器503127接地刀闸 x="304" y="189" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="256" 500kV第三大组交流滤波器503117接地刀闸 x="304" y="221" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <text x="570" dy="120" style="fill:black;font-size:10px;">50332</text>
+                                            <!--//第3串标注-->
+                                            <text x="570" dy="152" style="fill:black;font-size:10px;">5033</text>
+                                            <text x="570" dy="214" style="fill:black;font-size:10px;">50331</text>
+                                            <text x="570" dy="246" style="fill:black;font-size:10px;">50322</text>
+                                            <text x="570" dy="280" style="fill:black;font-size:10px;">5032</text>
+                                            <text x="570" dy="340" style="fill:black;font-size:10px;">50321</text>
+                                            <text x="570" dy="375" style="fill:black;font-size:10px;">50312</text>
+                                            <text x="570" dy="440" style="fill:black;font-size:10px;">5031</text>
+                                            <text x="570" dy="470" style="fill:black;font-size:10px;">50311</text>
+                                            <text x="653" dy="135" style="fill:black;font-size:10px;">503327</text>
+                                            <text x="653" dy="200" style="fill:black;font-size:10px;">503317</text>
+                                            <text x="653" dy="232" style="fill:black;font-size:10px;">503367</text>
+                                            <text x="653" dy="264" style="fill:black;font-size:10px;">503227</text>
+                                            <text x="653" dy="328" style="fill:black;font-size:10px;">503217</text>
+                                            <text x="653" dy="360" style="fill:black;font-size:10px;">503167</text>
+                                            <text x="653" dy="391" style="fill:black;font-size:10px;">503127</text>
+                                            <text x="653" dy="455" style="fill:black;font-size:10px;">502117</text>
+                                            <!--//第四串-->
+                                            <use id="296" 50432隔离开关 x="200" y="50" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="294" 500kV第二大组交流滤波器5043断路器 x="200" y="66" xlink:href="#cb"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="300" 5043断路器电流互感器 x="200" y="82" xlink:href="#ct"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="295" 50431隔离开关 x="200" y="98" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="289" 50422隔离开关 x="200" y="114" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="287" 500kV第四串联络5042断路器 x="200" y="130" xlink:href="#cb"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="291" 5042断路器电流互感器 x="200" y="146" xlink:href="#ct"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="288" 50421隔离开关 x="200" y="162" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="50412" 50412隔离开关 x="200" y="178" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="5041ct" x="200" y="194" xlink:href="#ct" transform="scale(2)"
+                                                 fill="none"
+                                                 stroke="grey"/>
+                                            <use id="5041" x="200" y="210" xlink:href="#cb" transform="scale(2)"
+                                                 fill="none"
+                                                 stroke="grey"/>
+                                            <use id="50411隔离开关" x="200" y="226" xlink:href="#dz2" transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <!--//第4串地刀-->
+                                            <use id="298" 500kV第二大组交流滤波器504327接地刀闸 x="204" y="61" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="297" 500kV第二大组交流滤波器504317接地刀闸 x="204" y="93" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="299" 500kV第二大组交流滤波器504367接地刀闸 x="204" y="109" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="290" 500kV第二大组交流滤波器504227接地刀闸 x="204" y="125" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="504217" x="204" y="157" xlink:href="#dd" transform="scale(2)"
+                                                 fill="none"
+                                                 stroke="grey"/>
+                                            <use id="504167" x="204" y="173" xlink:href="#dd" transform="scale(2)"
+                                                 fill="none"
+                                                 stroke="grey"/>
+                                            <use id="504127" x="204" y="189" xlink:href="#dd" transform="scale(2)"
+                                                 fill="none"
+                                                 stroke="grey"/>
+                                            <use id="285" 500kV第二大组交流滤波器504117接地刀闸 x="204" y="221" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="333" 500kV #2母线 5227接地刀闸 x="-51" y="200" xlink:href="#dd"
+                                                 transform="scale(2) rotate(270 0 0)" fill="none" stroke="grey"/>
+                                            <use id="328" 500kV #1母线 5127接地刀闸 x="241" y="-210" xlink:href="#dd"
+                                                 transform="scale(2) rotate(90 0 0)" fill="none" stroke="grey"/>
+                                            <text x="370" dy="120" style="fill:black;font-size:10px;">50432</text>
+                                            <!--//第4串标注-->
+                                            <text x="370" dy="152" style="fill:black;font-size:10px;">5043</text>
+                                            <text x="370" dy="214" style="fill:black;font-size:10px;">50431</text>
+                                            <text x="370" dy="246" style="fill:black;font-size:10px;">50422</text>
+                                            <text x="370" dy="280" style="fill:black;font-size:10px;">5042</text>
+                                            <text x="370" dy="340" style="fill:black;font-size:10px;">50421</text>
+                                            <text x="370" dy="375" style="fill:black;font-size:10px;">50412</text>
+                                            <text x="370" dy="440" style="fill:black;font-size:10px;">5041</text>
+                                            <text x="370" dy="470" style="fill:black;font-size:10px;">50411</text>
+                                            <text x="453" dy="135" style="fill:black;font-size:10px;">504327</text>
+                                            <text x="453" dy="200" style="fill:black;font-size:10px;">504317</text>
+                                            <text x="453" dy="232" style="fill:black;font-size:10px;">504367</text>
+                                            <text x="453" dy="264" style="fill:black;font-size:10px;">504227</text>
+                                            <text x="453" dy="328" style="fill:black;font-size:10px;">504217</text>
+                                            <text x="453" dy="360" style="fill:black;font-size:10px;">504167</text>
+                                            <text x="453" dy="391" style="fill:black;font-size:10px;">504127</text>
+                                            <text x="453" dy="455" style="fill:black;font-size:10px;">504117</text>
+                                            <text x="423" dy="501" style="fill:black;font-size:10px;">5127</text>
+                                            <text x="423" dy="89" style="fill:black;font-size:10px;">5227</text>
+                                            <!--//第五串-->
+                                            <use id="320" 50532隔离开关 x="100" y="51" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="318" 500kV第五串联络5052断路器 x="100" y="130" xlink:href="#cb"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="323" 5052断路器电流互感器 x="100" y="146" xlink:href="#ct"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="319" 50521隔离开关 x="100" y="162" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="305" 50512隔离开关 x="100" y="178" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="309" 5051断路器电流互感器 x="100" y="194" xlink:href="#ct"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="303" 500kV纳高线5051断路器 x="100" y="210" xlink:href="#cb"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <use id="304" 50511隔离开关 x="100" y="226" xlink:href="#dz2"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>    <!--//地刀-->
+                                            <use id="321" 500kV纳高线505217接地刀闸 x="104" y="157" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="308" 500kV纳高线505167接地刀闸 x="104" y="173" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="307" 500kV纳高线505127接地刀闸 x="104" y="189" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="306" 500kV纳高线505117接地刀闸 x="104" y="221" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <use id="322" 500kV纳高线505327接地刀闸 x="104" y="61" xlink:href="#dd"
+                                                 transform="scale(2)" fill="none" stroke="grey"/>
+                                            <line id="conline" x1="210" y1="130" x2="210" y2="260" stroke="grey"
+                                                  stroke-width="2"/><!-- 连接线-->
+                                            <text x="170" dy="120" style="fill:black;font-size:10px;">50532</text>
+                                            <!--//第五串标注-->
+                                            <text x="170" dy="280" style="fill:black;font-size:10px;">5052</text>
+                                            <text x="170" dy="340" style="fill:black;font-size:10px;">50521</text>
+                                            <text x="170" dy="375" style="fill:black;font-size:10px;">50512</text>
+                                            <text x="170" dy="440" style="fill:black;font-size:10px;">5051</text>
+                                            <text x="170" dy="470" style="fill:black;font-size:10px;">50511</text>
+                                            <text x="253" dy="135" style="fill:black;font-size:10px;">505327</text>
+                                            <text x="253" dy="328" style="fill:black;font-size:10px;">505217</text>
+                                            <text x="253" dy="360" style="fill:black;font-size:10px;">505167</text>
+                                            <text x="253" dy="391" style="fill:black;font-size:10px;">505127</text>
+                                            <text x="253" dy="455" style="fill:black;font-size:10px;">505117</text>
+                                            <!-- 线路-->
+                                            <polyline points="1010,228 950,228 950,26"
+                                                      style="fill:none;stroke:grey;stroke-width:1.7"
+                                                      marker-end="url(#markerArrow)"/>
+                                            <text x="930" dy="012" style="fill:grey;font-size:12px;">极2换流变</text>
+                                            <polyline points="810,228 750,228 750,26"
+                                                      style="fill:none;stroke:grey;stroke-width:1.7"
+                                                      marker-end="url(#markerArrow)"/>
+                                            <text x="740" dy="12" style="fill:grey;font-size:12px;">ACF1</text>
+                                            <polyline points="610,228 550,228 550,26"
+                                                      style="fill:none;stroke:grey;stroke-width:1.7"
+                                                      marker-end="url(#markerArrow)"/>
+                                            <text x="530" dy="12" style="fill:grey;font-size:12px;">安高I线</text>
+                                            <polyline points="410,228 350,228 350,26"
+                                                      style="fill:none;stroke:grey;stroke-width:1.7"
+                                                      marker-end="url(#markerArrow)"/>
+                                            <text x="340" dy="12" style="fill:grey;font-size:12px;">ACF2</text>
+                                            <polyline points="210,356 150,356 150,565"
+                                                      style="fill:none;stroke:grey;stroke-width:1.7"
+                                                      marker-end="url(#markerArrow)"/>
+                                            <text x="130" dy="590" style="fill:grey;font-size:12px;">枝高甲线</text>
+                                            <polyline points="410,356 350,356 350,565"
+                                                      style="fill:none;stroke:grey;stroke-width:1.7"
+                                                      marker-end="url(#markerArrow)"/>
+                                            <text x="330" dy="590" style="fill:grey;font-size:12px;">枝高乙线</text>
+                                            <polyline points="610,356 550,356 550,565"
+                                                      style="fill:none;stroke:grey;stroke-width:1.7"
+                                                      marker-end="url(#markerArrow)"/>
+                                            <text x="540" dy="590" style="fill:grey;font-size:12px;">ACF3</text>
+                                            <polyline points="810,356 750,356 750,565"
+                                                      style="fill:none;stroke:grey;stroke-width:1.7"
+                                                      marker-end="url(#markerArrow)"/>
+                                            <text x="730" dy="590" style="fill:grey;font-size:12px;">极1换流变</text>
+                                            <polyline points="1010,356 950,356 950,565"
+                                                      style="fill:none;stroke:grey;stroke-width:1.7"
+                                                      marker-end="url(#markerArrow)"/>
+                                            <text x="930" dy="590" style="fill:grey;font-size:12px;">安高II线</text>
+                                            <!--线路cvt 避雷器-->
+                                            <!--极1pt 避雷器-->
+                                            <use id="31" 极1换流变进线电压互感器 x="374" y="242" xlink:href="#pt"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <!--<text  x="796" dy="518" style="fill:black;font-size:12px;">极1换流变进线PT</text>	-->
+                                            <!--<use id="极1避雷器" x="-279" y="375" xlink:href="#blqjd" transform="scale(2) rotate(270 0 0)" fill="none" stroke="grey"  />-->
+                                            <!--<text  x="796" dy="558" style="fill:black;font-size:12px;">极1换流变进线避雷器</text>	-->
+                                            <!--极2pt 避雷器-->
+                                            <use id="56" 极2换流变进线电压互感器A相 x="474" y="12" xlink:href="#pt"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <!--<use id="极2换流变避雷器" x="-50" y="475" xlink:href="#blqjd" transform="scale(2) rotate(270 0 0)" fill="none" stroke="grey"  />-->
+                                            <!--1#m cvt 避雷器-->
+                                            <use id="330" 500kV #1M CVT C相 x="500" y="372" xlink:href="#cvt"
+                                                 transform="scale(1.3)" fill="none" stroke="grey"/>
+                                            <use id="329" 500kV #1M避雷器 x="300" y="242" xlink:href="#blqjd"
+                                                 transform="scale(2)"
+                                                 fill="none" stroke="grey"/>
+                                            <!--2#m cvt 避雷器-->
+                                            <use id="334" 500kV #2M CVT C相 x="-524" y="-78" xlink:href="#cvt"
+                                                 transform="scale(1.3) rotate(180 0 0)" fill="none" stroke="grey"/>
+                                            <use id="335" 500kV #2M避雷器 x="-310" y="-51" xlink:href="#blqjd"
+                                                 transform="scale(2) rotate(180 0 0)" fill="none" stroke="grey"/>
+                                            <!--安高II线cvt 避雷器-->
+                                            <use id="205" 安高Ⅱ线CVT x="379" y="-731" xlink:href="#cvt"
+                                                 transform="scale(1.3) rotate(90 0 0)" fill="none" stroke="grey"/>
+                                            <use id="206" 500kV 安高Ⅱ线避雷器 x="270" y="-475" xlink:href="#blqjd"
+                                                 transform="scale(2) rotate(90 0 0)" fill="none" stroke="grey"/>
+                                            <!--枝高乙线cvt 避雷器-->
+                                            <use id="枝高乙线CVT" x="379" y="-269" xlink:href="#cvt"
+                                                 transform="scale(1.3) rotate(90 0 0)" fill="none" stroke="grey"/>
+                                            <use id="枝高乙线避雷器" x="270" y="-175" xlink:href="#blqjd"
+                                                 transform="scale(2) rotate(90 0 0)" fill="none" stroke="grey"/>
+                                            <!--枝高甲线cvt 避雷器-->
+                                            <use id="312" 枝高甲线CVT x="379" y="-116" xlink:href="#cvt"
+                                                 transform="scale(1.3) rotate(90 0 0)" fill="none" stroke="grey"/>
+                                            <use id="313" 500kV枝高甲线避雷器 x="270" y="-075" xlink:href="#blqjd"
+                                                 transform="scale(2) rotate(90 0 0)" fill="none" stroke="grey"/>
+                                            <!--安高I线cvt 避雷器-->
+                                            <use id="279" 安高I线 CVT x="42" y="-424" xlink:href="#cvt"
+                                                 transform="scale(1.3) rotate(90 0 0)" fill="none" stroke="grey"/>
+                                            <use id="280" 500kV 安高Ⅰ线避雷器 x="16" y="-275" xlink:href="#blqjd"
+                                                 transform="scale(2) rotate(90 0 0)" fill="none" stroke="grey"/>
+                                            <!--图例-->
+                                            <rect x="10" y="160" width="120" height="20"
+                                                  style="fill:red;stroke:grey;stroke-width:2;opacity:0.6"/>
+                                            <rect x="10" y="180" width="120" height="20"
+                                                  style="fill:orange;stroke:grey;stroke-width:2;opacity:0.6"/>
+                                            <rect x="10" y="200" width="120" height="20"
+                                                  style="fill:blue;stroke:grey;stroke-width:2;opacity:0.6"/>
+                                            <rect x="10" y="220" width="120" height="20"
+                                                  style="fill:green;stroke:grey;stroke-width:2;opacity:0.6"/>
+                                            <rect x="10" y="120" width="120" height="40"
+                                                  style="fill:gold;stroke:grey;stroke-width:2;opacity:0.6"/>
+                                            <text style="fill:green;font-size:14px;">
+                                                <tspan x="15" y="137">管控</tspan>
+                                                <tspan x="55" y="137">健康</tspan>
+                                                <tspan x="95" y="137">重要</tspan>
+                                                <tspan x="15" y="152">级别</tspan>
+                                                <tspan x="60" y="152">度</tspan>
+                                                <tspan x="102" y="152">度</tspan>
+                                            </text>
+                                            <text style="fill:white;font-size:14px;">
+                                                <tspan x="15" y="175">Ⅰ级</tspan>
+                                                <tspan x="55" y="175">严重</tspan>
+                                                <tspan x="95" y="175">关键</tspan>
+                                            </text>
+                                            <text style="fill:white;font-size:14px;">
+                                                <tspan x="15" y="195">Ⅱ级</tspan>
+                                                <tspan x="55" y="195">异常</tspan>
+                                                <tspan x="95" y="195">重要</tspan>
+                                            </text>
+                                            <text style="fill:white;font-size:14px;">
+                                                <tspan x="15" y="215">Ⅲ级</tspan>
+                                                <tspan x="55" y="215">注意</tspan>
+                                                <tspan x="95" y="215">关注</tspan>
+                                            </text>
+                                            <text style="fill:white;font-size:14px;">
+                                                <tspan x="15" y="235">Ⅳ级</tspan>
+                                                <tspan x="55" y="235">正常</tspan>
+                                                <tspan x="95" y="235">一般</tspan>
+                                            </text>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="panel-795191">
+                                    <svg id="jllbcsvg" preserveAspectRatio="xMinYMin meet"
+                                         xmlns="http://www.w3.org/2000/svg"
+                                         version="1.1" viewBox="0,0,1280,720">
+                                    </svg>
+                                </div>
+                                <div class="tab-pane" id="panel-795192">
+                                    <svg id="hlbzlcsvg" preserveAspectRatio="xMinYMin meet"
+                                         xmlns="http://www.w3.org/2000/svg"
+                                         version="1.1" viewBox="0,0,1280,720">
+                                    </svg>
+                                </div>
+                                <div class="tab-pane" id="panel-795193">
+                                    <svg id="zydsvg" preserveAspectRatio="xMinYMin meet"
+                                         xmlns="http://www.w3.org/2000/svg"
+                                         version="1.1" viewBox="0,0,1280,720">
+                                    </svg>
+                                </div>
+                                <div class="tab-pane" id="panel-795194">
+                                    <svg id="ecsbsvg" preserveAspectRatio="xMinYMin meet"
+                                         xmlns="http://www.w3.org/2000/svg"
+                                         version="1.1" viewBox="0,0,1280,720">
+                                    </svg>
+                                </div>
+                                <div class="tab-pane" id="panel-795195">
+                                    二次设备
+                                    <svg id="ceshi" preserveAspectRatio="xMinYMin meet"
+                                         xmlns="http://www.w3.org/2000/svg"
+                                         version="1.1" viewBox="0,0,1280,720">
+
+                                    </svg>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+{% endblock mainbody %}
+
+

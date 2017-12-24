@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}数据维护{% endblock %}
+{% block mainbody %}
+    <div class="container">
+        <div class="row clearfix">
+            <h2 align="center">请填写隐患最新跟踪情况</h2>
+            <div class="col-lg-2 col-xs-2">
+
+            </div>
+            <div class="col-lg-5 col-xs-5">
+                <div>
+
+                    <h4>隐患编号:{{ perilitem.perilId }}</h4></br>
+                    <h4>设备名称:{{ perilitem.perilTitle }}</h4></br>
+                    <h4>隐患描述:{{ perilitem.perilDescription }}</h4></br>
+                    <h4>隐患等级:{{ perilitem.perilGrade }}<span>&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;</span>隐患状态:{{ perilitem.perilState }}
+                    </h4></br>
+                    <h4>
+                        消缺班组:{{ perilitem.perilRemoveTeam }}<span>&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;</span>设备主人:{{ perilitem.deviceMaster }}
+                    </h4></br>
+                    <h4>短期措施:{{ perilitem.shortAction }}</h4></br>
+                    <h4>完成时间:{{ perilitem.shortTime }}</h4></br>
+                    <h4>中期措施:{{ perilitem.middleAction }}</h4></br>
+                    <h4>完成时间:{{ perilitem.middleTime }}</h4></br>
+                    <h4>长期措施:{{ perilitem.longAction }}</h4></br>
+                    <h4>完成时间:{{ perilitem.longTime }}</h4></br>
+                    <h4>工作情况:{{ perilitem.workHaveDone }}</h4></br>
+                </div>
+            </div>
+            <div class="col-lg-3 col-xs-3">
+                {{ wtf.quick_form(form) }}
+            </div>
+            <div class="col-lg-2 col-xs-2">
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}首页{% endblock %}
+
+{% block mainbody %}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/data.css') }}">
+
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-lg-offset-2 col-lg-9 col-xs-9">
+                <div id="svgdiv">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-lg-offset-2 col-lg-9 col-xs-9">
+                <div id="svgdiv3">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-lg-offset-2 col-lg-9 col-xs-9">
+                <div id="svgdiv2">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="{{ url_for('static',filename='js/d3.js') }}"></script>
+    <script>
+        var xd = {{xd|tojson|safe}};
+        var data1 = {{data1}};
+        console.log(data1);
+        var data2 = {{data2|tojson|safe}};
+        console.log(data2);
+        var data3 = {{data3|tojson|safe}};
+        console.log(data3);
+    </script>
+    <script type="text/javascript" src="{{ url_for('static',filename='js/index.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static',filename='js/stack.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static',filename='js/health.js') }}"></script>
+{% endblock %}
