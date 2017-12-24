@@ -1,9 +1,8 @@
-import tablib,xlrd,os
+import tablib,xlrd,os,re
 from flask import render_template, redirect, url_for, g, make_response, Blueprint,request,flash
 from flask_login import login_required, current_user
-from .forms import defectuploadForm
 from myblog.controllers.forms import defectForm, perilForm
-from myblog.controllers.model import DevDefect, Devtable, HiddenPeril
+from myblog.controllers.model import Devdefect, Devtable, HiddenPeril,Detal
 from myblog.exts import db,myconfig
 from datetime import datetime
 
@@ -76,64 +75,60 @@ def writedefectdata(defect,row):
     defect.deviceCommissionDate = row['投运日期']
 
 def writeperildata(peril,row):
-    peril.voltageGrade = row['电压等级']
-    peril.defectGrade = row['缺陷等级']
-    peril.defectStation = row['地点']
-    peril.defectPlace = row['功能位置']
-    peril.defectDev = row['设备名称']
-    peril.defectPart = row['部件名称']
-    peril.defectCause = row['缺陷类型']
-    peril.eviceCategory = row['设备类别']
-    peril.deviceCategoryId = row['设备类别编码']
-    peril.defectPhan = row['缺陷表象']
-    peril.defectDescription = row['缺陷描述']
-    peril.defectState = row['缺陷状态']
-    peril.professionCategory1 = row['专业大类']
-    peril.dprofessionCategory2 = row['专业小类']
-    peril.deadTime = row['应完成缺陷处理时间']
-    peril.defectFindTime = row['发现时间']
-    peril.defectFindPerson = row['发现人']
-    peril.defectRemoveTime = row['消缺时间']
-    peril.efectRemoveTeam = row['消缺班组']
-    peril.defectRemovePerson = row['消缺人']
-    peril.defectReason = row['缺陷原因']
-    peril.defectPart2 = row['缺陷部位']
-    peril.defectRemoveMethod = row['处理措施']
-    peril.defectRemoveMethodDetal = row['处理情况描述']
-    peril.defectCheckTime = row['验收时间']
-    peril.defectCheckPerson = row['验收人']
-    peril.defectManufacturer = row['生产厂家']
-    peril.deviceProductDate = row['出厂年月']
-    peril.deviceModelNo = row['设备型号']
-    peril.deviceCommissionDate = row['投运日期']
+    peril.perilId = row['隐患编号']
+    peril.perilStation = row['填报单位']
+    # peril.perilVolt = row['缺陷等级']
+    peril.perilTitle = row['隐患名称']
+    # peril.perilPart = row['功能位置']
+    peril.perilLocal = row['隐患地点']
+    peril.perilDescription = row['隐患描述']
+    peril.perilFrom = row['隐患来源']
+    peril.perilCategory1 = row['隐患一级类型']
+    peril.perilCategory2 = row['隐患二级类型']
+    peril.perilCategory3 = row['隐患二级类型']
+    peril.perilFindTime = row['隐患发现日期']
+    peril.perilEvaTime = row['隐患评估日期']
+    peril.perilGrade = row['隐患等级']
+    peril.perilCause = row['隐患后果']
+    peril.perilCauseGrade = row['隐患后果等级']
+    peril.perilRemoveTeam = row['治理责任单位']
+    peril.perilPlan = row['隐患整治初步方案']
+    peril.perilState = row['状态']
+    peril.perilSupervise = row['督办信息']
+
 
 @defect_blueprint.route('/defectdisplay/', methods=['GET', 'POST'])
 @login_required
 def defectdisplay():
-    form = defectuploadForm()
-    defects = DevDefect.query.filter(DevDefect.defectState != "已归档").all()
+    # form = defectuploadForm()
+    defects = Devdefect.query.filter(Devdefect.defectState != "已归档").all()
     perils = HiddenPeril.query.filter(HiddenPeril.perilState != "已结束").all()
+    timed = Detal.query.filter(Detal.title == 'defecttime').first()
+    timep = Detal.query.filter(Detal.title == 'periltime').first()
     if request.method == 'POST':
         save_dir = os.path.join(os.path.curdir, 'myblog\static', myconfig.UPLOAD_FOLDER,'excel')
         # print(save_dir)
         file = request.files['file']
         time = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         filename = current_user.username+'_'+time+'_'+file.filename
-        lasttime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        print(filename)
+
         # 判断文件名是否合规
         if file and allowed_file(filename) and 'DefectExcelExportTemplate' in filename:
             file.save(os.path.join(save_dir,filename))
             flash('成功:缺陷数据文件已上传服务器')
+            defecttime = re.search(r"e_(\d.+).xls", file.filename).group(1)
+            timed.content = defecttime[:10]
+            db.session.add(timed)
+            db.session.commit()
             tables = excel_table_byindex(file=os.path.join(save_dir, filename))
             for row in tables:
                 # print(row)
-                defect = DevDefect.query.filter(DevDefect.defectId == row['缺陷编号']).first()
+                defect = Devdefect.query.filter(Devdefect.defectId == row['缺陷编号']).first()
                 if defect:
                     writedefectdata(defect, row)
                     db.session.commit()
                 elif row['地点'] == '±500kV安顺换流站':
-                    newdefect = DevDefect(defectId=row['缺陷编号'])
+                    newdefect = Devdefect(defectId=row['缺陷编号'])
                     writedefectdata(newdefect, row)
                     db.session.add(newdefect)
                     db.session.commit()
@@ -142,20 +137,35 @@ def defectdisplay():
         elif file and allowed_file(filename) and '安全隐患' in filename:
             file.save(os.path.join(save_dir, filename))
             flash('成功:隐患数据文件已上传服务器')
+            periltime = re.search(r"患_(\d.+).xls", file.filename).group(1)
+            timep.content =periltime[:10]
+            db.session.add(timep)
+            db.session.commit()
             tables = excel_table_byindex(file=os.path.join(save_dir, filename))
-            print(tables)
-            pass
+            for row in tables:
+                peril = HiddenPeril.query.filter(HiddenPeril.perilId == row['隐患编号']).first()
+                if peril:
+                    writeperildata(peril, row)
+                    db.session.commit()
+                elif '安顺换流站'in row['填报单位']:
+                    newperil = HiddenPeril(perilId=row['隐患编号'])
+                    writeperildata(newperil, row)
+                    db.session.add(newperil)
+                    db.session.commit()
+                else:pass
+            redirect(url_for('defect.defectdisplay'))
         else:
             flash('失败:上传文件格式不对')
             redirect(url_for('defect.defectdisplay'))
-            # return render_template('defect/defectdisplay.html', form=form,defects=defects, perils=perils, user=current_user,lasttime=lasttime)
-    return render_template('defect/defectdisplay.html', form=form,defects=defects, perils=perils, user=current_user)
+    return render_template('defect/defectdisplay.html', defects=defects, perils=perils, user=current_user,
+                           timed=timed,timep=timep
+                           )
 
 
 @defect_blueprint.route('/defectedit/<defectid>', methods=['GET', 'POST'])
 @login_required
 def defectedit(defectid):
-    defectitem = DevDefect.query.filter(DevDefect.defectId == defectid).first()
+    defectitem = Devdefect.query.filter(Devdefect.defectId == defectid).first()
     devfind = Devtable.query.filter(Devtable.devname == defectitem.defectDev).first()
     form = defectForm()
     if form.validate_on_submit():
@@ -231,7 +241,7 @@ def periledit(perilId):
 
 @defect_blueprint.route('/defectexcel', methods=['GET', 'POST'])
 def defectexcel():
-    defectquery = DevDefect.query.filter(DevDefect.defectState != "已归档")
+    defectquery = Devdefect.query.filter(Devdefect.defectState != "已归档")
     defects = defectquery.all()
     long = defectquery.count()
 

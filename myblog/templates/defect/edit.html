@@ -5,12 +5,8 @@
     <div class="container">
         <div class="row clearfix">
             <h2 align="center">请填写缺陷最新跟踪情况</h2>
-            <div class="col-lg-2 col-xs-2">
-
-            </div>
-            <div class="col-lg-5 col-xs-5">
+            <div class="col-lg-offset-1 col-lg-5 col-xs-5">
                 <div>
-
                     <h4>缺陷编号:{{ defectitem.defectId }}</h4></br>
                     <h4>设备名称:{{ defectitem.defectDev }}</h4></br>
                     <h4>缺陷描述:{{ defectitem.defectDescription }}</h4></br>
@@ -28,11 +24,9 @@
                     <h4>工作情况:{{ defectitem.workHaveDone }}</h4></br>
                 </div>
             </div>
-            <div class="col-lg-3 col-xs-3">
-            </div>
-            {{ wtf.quick_form(form) }}
-            <div class="col-lg-2 col-xs-2">
 
+            <div class="col-lg-offset-1 col-lg-3 col-xs-2">
+                {{ wtf.quick_form(form) }}
             </div>
         </div>
     </div>

@@ -10,7 +10,7 @@ class ProdConfig(Config):
     DEBUG = True
     HOSTNAME = '127.0.0.1'
     PORT = '3306'
-    DATABASE = 'studyflask'
+    DATABASE = 'blog'
     USERNAME = 'root'
     PASSWORD = 'root1234'
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://{}:{}@{}:{}/{}?charset=utf8'.format(USERNAME, PASSWORD, HOSTNAME, PORT,
