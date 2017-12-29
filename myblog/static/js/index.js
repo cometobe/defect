@@ -9,14 +9,14 @@
 		.attr("width", width)
 		.attr("height", height);
 
-	var title=svg.append("g")
-    .append("text")
-    .attr("class","title")
-    .text("设备主人管辖设备统计")
-    .attr({
-        "x":200,
-        "y":530
-    });
+    // var title=svg.append("g")
+    // .append("text")
+    // .attr("class","title")
+    // .text("设备主人管辖设备统计")
+    // .attr({
+    //     "x":200,
+    //     "y":530
+    // });
 
 	//画布周边的空白
 	var padding = {left:30, right:30, top:30, bottom:30};

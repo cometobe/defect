@@ -92,14 +92,14 @@
 			.attr("transform","translate(" + padding.left + "," + (heights - padding.bottom - yRangeWidth) +  ")")
 			.call(yAxis);
 
-	svg.append("g")
-    .append("text")
-    .attr("class","title")
-    .text("按设备管控级别统计")
-    .attr({
-        "x":200,
-        "y":530
-    });
+    // svg.append("g")
+    // .append("text")
+    // .attr("class","title")
+    // .text("按设备管控级别统计")
+    // .attr({
+    //     "x":200,
+    //     "y":530
+    // });
 
 	//添加分组标签
 	var labHeight = 50;

@@ -3,42 +3,65 @@
 
 {% block mainbody %}
     <link rel="stylesheet" href="{{ url_for('static',filename='css/data.css') }}">
-
-    <div class="container">
-        <div class="row clearfix">
-            <div class="col-lg-offset-2 col-lg-9 col-xs-9">
-                <div id="svgdiv">
+    <div class="tabbable tabs-left col-lg-12 col-xs-12" id="tabs-152184">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#panel-177001" data-toggle="tab">管辖设备统计</a>
+            </li>
+            <li>
+                <a href="#panel-177002" data-toggle="tab">设备管控级别统计</a>
+            </li>
+            <li>
+                <a href="#panel-177003" data-toggle="tab">设备重要度统计</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="panel-177001">
+{#                <div class="container">#}
+{#                    <div class="row clearfix">#}
+                        <div class="col-lg-offset-2 col-lg-7 col-xs-12">
+                            <div id="svgdiv">
+                            </div>
+                        </div>
+{#                    </div>#}
+{#                </div>#}
+            </div>
+{#        </div>#}
+{#        <div class="tab-content">#}
+            <div class="tab-pane" id="panel-177002">
+{#                <div class="container">#}
+{#                    <div class="row clearfix">#}
+                        <div class="col-lg-offset-2 col-lg-5 col-xs-12">
+                            <div id="svgdiv3">
+                            </div>
+{#                        </div>#}
+{#                    </div>#}
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="container">
-        <div class="row clearfix">
-            <div class="col-lg-offset-2 col-lg-9 col-xs-9">
-                <div id="svgdiv3">
-                </div>
+{#        </div>#}
+{#        <div class="tab-content">#}
+            <div class="tab-pane" id="panel-177003">
+{#                <div class="container">#}
+{#                    <div class="row clearfix">#}
+                        <div class="col-lg-offset-2 col-lg-5 col-xs-12">
+                            <div id="svgdiv2">
+                            </div>
+                        </div>
+{#                    </div>#}
+{#                </div>#}
             </div>
         </div>
-    </div>
-    <div class="container">
-        <div class="row clearfix">
-            <div class="col-lg-offset-2 col-lg-9 col-xs-9">
-                <div id="svgdiv2">
-                </div>
-            </div>
-        </div>
-    </div>
-    <script type="text/javascript" src="{{ url_for('static',filename='js/d3.js') }}"></script>
-    <script>
-        var xd = {{xd|tojson|safe}};
-        var data1 = {{data1}};
-        console.log(data1);
-        var data2 = {{data2|tojson|safe}};
-        console.log(data2);
-        var data3 = {{data3|tojson|safe}};
-        console.log(data3);
-    </script>
-    <script type="text/javascript" src="{{ url_for('static',filename='js/index.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static',filename='js/stack.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static',filename='js/health.js') }}"></script>
+                <script type="text/javascript" src="{{ url_for('static',filename='js/d3.js') }}"></script>
+                <script>
+                    var xd = {{xd|tojson|safe}};
+                    var data1 = {{data1}};
+                    console.log(data1);
+                    var data2 = {{data2|tojson|safe}};
+                    console.log(data2);
+                    var data3 = {{data3|tojson|safe}};
+                    console.log(data3);
+                </script>
+                <script type="text/javascript" src="{{ url_for('static',filename='js/index.js') }}"></script>
+                <script type="text/javascript" src="{{ url_for('static',filename='js/stack.js') }}"></script>
+                <script type="text/javascript" src="{{ url_for('static',filename='js/health.js') }}"></script>
 {% endblock %}

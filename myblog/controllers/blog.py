@@ -6,7 +6,6 @@ from flask_login import current_user,login_required
 from flask_principal import UserNeed
 from sqlalchemy import func
 from werkzeug.utils import secure_filename
-
 from myblog.controllers.forms import CommentForm, PostForm
 from myblog.controllers.model import Post, Tag, tags, Comment, User
 from myblog.exts import db, poster_permission, admin_permission, Permission, myconfig
