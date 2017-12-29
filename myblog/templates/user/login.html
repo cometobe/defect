@@ -5,6 +5,8 @@
 {% block content %}
     <link rel="stylesheet" href="{{ url_for('static',filename='css/login.css') }}">
     <div class="container">
+
+
         <div class="row">
             <div class="col-lg-offset-4 col-lg-3 col-xs-offset-2 col-xs-8">
                 <form class="form-horizontal" role="form" method="post" action="{{ url_for('user.login') }}">

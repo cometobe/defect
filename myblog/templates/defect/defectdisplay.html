@@ -10,18 +10,18 @@
                     <div class="col-lg-2 col-xs-2 column">
                         <div class="form-group">
 
-                            <input id="fat-btn" class="btn btn-default form-group" type="button" value='下载excel'
-                                   onclick=location.href='{{ url_for(".defectexcel") }}'>
-                            </input>
+                            <button id="fat-btn" class="btn btn-default form-group" type="button" value='下载excel'
+                                   onclick=location.href='{{ url_for(".defectexcel") }}'><i class="fa fa-download fa-lg"></i>下载excel
+                            </button>
                         </div>
                     </div>
                     <div class="col-lg-6 col-xs-6 column">
                         <form class="form-horizontal" role="form" method="post"
                               action="{{ url_for('defect.defectdisplay') }}" enctype=multipart/form-data>
-                            <input class="form-actions" type="submit" value="上传">
-                            <input id="lefile" type="file" name=file style="display:none" class="form-inline">
-                            <input id="photoCover" class="input-large" type="text" style="height:30px;">
-                            <a class="btn" onclick="$('input[id=lefile]').click();">浏览</a>
+                            <button class="form-actions btn btn-default" type="submit" value="上传">&nbsp;<i class="fa fa-upload fa-lg"></i>&nbsp;上传&nbsp;</button>
+                            <input id="lefile" type="file" name=file style="display:none" class="form-inline" >
+                            <input id="photoCover" class="input-large" type="text" style="height:30px;" placeholder="上传最新数据文件">
+                            <a class="btn" onclick="$('input[id=lefile]').click();">浏览&nbsp<i class="fa fa-folder-open-o fa-lg"></i></a>
                         </form>
                     </div>
                     <div class="col-lg-4 col-xs-4 column">

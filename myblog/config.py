@@ -22,7 +22,7 @@ class ProdConfig(Config):
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
     ALLOWED_EXTENSIONS = (['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'JPG'])
     ALLOWED_IMAGES = (['png', 'jpg', 'jpeg', 'gif', 'JPG'])
-
+    BABEL_DEFAULT_LOCALE = 'zh_Hans_CN'
 
 class DevConfig(Config):
     DEBUG = True

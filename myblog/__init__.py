@@ -4,7 +4,7 @@ from flask_login import current_user
 from flask_principal import identity_loaded, UserNeed, RoleNeed
 from myblog.controllers.model import User,Role,HiddenPeril,Detal,Devtable,Comment,BLOGImage,Tag,Post,Image,Devdefect
 from myblog.controllers.admin import MyModelView,MyFileView,MyView
-from myblog.exts import db, bcrypt, oid, login_manager, principals, bootstrap,admin,babel
+from myblog.exts import db, bcrypt, oid, login_manager, principals, bootstrap,admin
 from .controllers.blog import blog_blueprint
 from .controllers.dataman import data_blueprint
 from .controllers.defectedit import defect_blueprint
@@ -31,7 +31,6 @@ def postheadurl(self):
     postheadurl = poster.thumbnail_url
     return postheadurl
 
-    # blog_blueprint.add_template_filter(double_step_filter, 'double_step')
 
 
 #
@@ -44,7 +43,6 @@ def postheadurl(self):
 def create_app(object_name):
     app = Flask(__name__)
     app.config.from_object(object_name)
-    app.config['BABEL_DEFAULT_LOCALE'] = 'zh_CN'
 
     db.init_app(app)
     bcrypt.init_app(app)
@@ -53,9 +51,7 @@ def create_app(object_name):
     principals.init_app(app)
     bootstrap.init_app(app)
     admin.init_app(app)
-    babel.init_app(app)
-    #
-    # admin.add_view(MyView(name='数据库'))
+
     models = [User,Role,HiddenPeril,Detal,Devtable,Comment,BLOGImage,Tag,Post,Image,Devdefect]
 
     for model in models:
@@ -97,14 +93,6 @@ def create_app(object_name):
     env.filters['str2list'] = str2list
     env.filters['poster'] = poster
     env.filters['postheadurl'] = postheadurl
-
-    @bable.localeselector
-    def get_locale():
-        override = 'zh_CN'
-        if override:
-            session['lang'] = override
-        return session.get('lang', 'en')
-
 
 
     return app

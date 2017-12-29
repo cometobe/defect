@@ -1,36 +1,36 @@
-#posttitle {
+.posttitle{
     text-align: center;
     min-height: 30px;
 }
 
-#posttext {
-    text-align: left;
+/*#posttext {*/
+    /*text-align: left;*/
 
-}
+/*}*/
 
-#poster {
-    text-align: left;
+/*#poster {*/
+    /*text-align: left;*/
 
-}
+/*}*/
 
-.posttitlediv {
-    text-align: center;
-    min-height: 40px;
-}
+/*.posttitlediv {*/
+    /*text-align: center;*/
+    /*min-height: 40px;*/
+/*}*/
 
-.posttextdiv {
-    text-align: left;
-    min-height: 60px;
-}
+/*.posttextdiv {*/
+    /*text-align: left;*/
+    /*min-height: 60px;*/
+/*}*/
 
-.posterdiv {
-    text-align: left;
-    min-height: 30px;
-}
+/*.posterdiv {*/
+    /*text-align: left;*/
+    /*min-height: 30px;*/
+/*}*/
 
-.posttagdiv {
-    min-height: 30px;
-}
+/*.posttagdiv {*/
+    /*min-height: 30px;*/
+/*}*/
 
 /*.img-img{*/
 
@@ -44,15 +44,15 @@
     /*margin-top: 10px;*/
 
 /*!*}*!*/
-.img-img {float:left;margin:1px;width:80px;height:80px; padding-top: 5%;text-align:center}
+.img-img {width:150px;height:150px;}
 /*.post-title {float:right;}*/
 
 
 ul li{
     list-style-type:none;
 }
-hr{
-    height:2px;
-    border:none;
-    border-top:1px ridge green;
-}
+/*hr{*/
+    /*height:2px;*/
+    /*border:none;*/
+    /*border-top:1px ridge green;*/
+/*}*/
